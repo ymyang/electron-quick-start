@@ -1,0 +1,26 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "electron quick start",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymyang/electron-quick-start.git"
+  },
+  "keywords": [
+    "electron"
+  ],
+  "author": "ymyang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ymyang/electron-quick-start/issues"
+  },
+  "homepage": "https://github.com/ymyang/electron-quick-start#readme",
+  "devDependencies": {
+    "electron-packager": "^6.0.0",
+    "electron-prebuilt": "^0.36.12"
+  }
+}
