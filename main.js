@@ -17,6 +17,7 @@ var win = null;
 app.on('ready', function() {
     createWindow();
     initTray();
+    hotkey();
 });
 
 app.on('window-all-closed', function() {
@@ -35,8 +36,10 @@ app.on('activate', function() {
 function createWindow() {
     win = new BrowserWindow({
         icon: 'res/yliyun_64.png',
+        title: '一粒云盘',
         width: 800,
-        height: 600
+        height: 600,
+        autoHideMenuBar: true
     });
     win.loadUrl(__dirname + '/index.html');
 
@@ -90,4 +93,18 @@ function initTray() {
 
     tray.setContextMenu(menu);
 
+}
+
+function hotkey() {
+    var globalShortcut = electron.globalShortcut;
+
+    globalShortcut.register('ctrl+f12', function() {
+        win.webContents.openDevTools({
+            detach: true
+        });
+    });
+
+    globalShortcut.register('ctrl+f5', function() {
+        win.webContents.reload();
+    });
 }
