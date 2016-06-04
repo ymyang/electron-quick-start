@@ -1,15 +1,35 @@
 /**
  * Created by yang on 2016/4/1.
  */
-var gulp = require('gulp');
-var packager = require('electron-packager');
+'use strict';
 
-gulp.task('pack', function() {
+const proc = require('child_process');
+const gulp = require('gulp');
+const electron = require('electron-prebuilt');
+const packager = require('electron-packager');
+
+gulp.task('dev', () => {
+    let child = proc.spawn(electron, ['.']);
+
+    child.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+
+    child.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+    });
+
+    child.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+});
+
+gulp.task('pack', () => {
     packager({
         arch: 'ia32',
         dir: '.',
         platform: 'win32',
-        version: '0.36.12',
+        version: '1.2.1',
         cache: './tmp',
         out: './release',
         asar: false,
@@ -17,7 +37,7 @@ gulp.task('pack', function() {
         name: 'yliyun',
         appVersion: '1.7.2',
         appCopyright: 'yliyun.com'
-    }, function(err, app) {
+    }, (err, app) => {
         if (err) {
             console.error('pack err', err);
         }

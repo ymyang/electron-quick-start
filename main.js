@@ -41,7 +41,7 @@ function createWindow() {
         height: 600,
         autoHideMenuBar: true
     });
-    win.loadUrl(__dirname + '/index.html');
+    win.loadURL(__dirname + '/index.html');
 
     //win.webContents.openDevTools();
 
