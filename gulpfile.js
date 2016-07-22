@@ -17,6 +17,7 @@ gulp.task('build', () => {
     jetpack.dir('./build', { empty: true});
     jetpack.copy('./src/res', './build/res', { overwrite: true });
     jetpack.copy('./src/app', './build', { overwrite: true });
+    jetpack.copy('./src/package.json', './build/package.json', { overwrite: true });
 });
 
 gulp.task('dev', ['build'], () => {
