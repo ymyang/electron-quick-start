@@ -98,13 +98,13 @@ function initTray() {
 function hotkey() {
     var globalShortcut = electron.globalShortcut;
 
-    globalShortcut.register('ctrl+f12', function() {
+    globalShortcut.register('CommandOrControl+F12', function() {
         win.webContents.openDevTools({
             detach: true
         });
     });
 
-    globalShortcut.register('ctrl+f5', function() {
+    globalShortcut.register('CommandOrControl+F5', function() {
         win.webContents.reload();
     });
 }
