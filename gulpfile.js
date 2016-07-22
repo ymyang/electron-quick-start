@@ -9,13 +9,17 @@ const gulp = require('gulp');
 // const packager = require('electron-packager');
 const jetpack = require('fs-jetpack');
 
+gulp.task('clean', () => {
+    jetpack.remove('./build');
+});
+
 gulp.task('build', () => {
     jetpack.dir('./build', { empty: true});
     jetpack.copy('./src/res', './build/res', { overwrite: true });
     jetpack.copy('./src/app', './build', { overwrite: true });
 });
 
-gulp.task('dev', () => {
+gulp.task('dev', ['build'], () => {
     let child = proc.spawn(electron, ['build']);
 
     child.stdout.on('data', (data) => {
