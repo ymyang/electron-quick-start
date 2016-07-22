@@ -5,11 +5,18 @@
 
 const proc = require('child_process');
 const gulp = require('gulp');
-const electron = require('electron-prebuilt');
-const packager = require('electron-packager');
+// const electron = require('electron-prebuilt');
+// const packager = require('electron-packager');
+const jetpack = require('fs-jetpack');
+
+gulp.task('build', () => {
+    jetpack.dir('./build', { empty: true});
+    jetpack.copy('./src/res', './build/res', { overwrite: true });
+    jetpack.copy('./src/app', './build', { overwrite: true });
+});
 
 gulp.task('dev', () => {
-    let child = proc.spawn(electron, ['.']);
+    let child = proc.spawn(electron, ['build']);
 
     child.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
