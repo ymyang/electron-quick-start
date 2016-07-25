@@ -5,7 +5,6 @@
 
 const proc = require('child_process');
 const gulp = require('gulp');
-// const electron = require('electron-prebuilt');
 // const packager = require('electron-packager');
 const jetpack = require('fs-jetpack');
 
@@ -20,7 +19,8 @@ gulp.task('build', () => {
     jetpack.copy('./src/package.json', './build/package.json', { overwrite: true });
 });
 
-gulp.task('dev', ['build'], () => {
+gulp.task('start', () => {
+    let electron = 'cache/electron-v1.2.8-win32-ia32/electron.exe';
     let child = proc.spawn(electron, ['build']);
 
     child.stdout.on('data', (data) => {
@@ -33,6 +33,34 @@ gulp.task('dev', ['build'], () => {
 
     child.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
+    });
+});
+
+
+gulp.task('publish', () => {
+    jetpack.dir('./publish', { empty: true });
+    jetpack.copy('./cache/electron-v1.2.8-win32-ia32', './publish', {
+        overwrite: true
+    });
+    jetpack.rename('./publish/electron.exe', 'yliyun.exe');
+    jetpack.remove('./cache/electron-v1.2.8-win32-ia32/resources/default_app.asar');
+    jetpack.copy('./build', './cache/electron-v1.2.8-win32-ia32/resources/app', {
+        overwrite: true
+    });
+
+    require('winresourcer')({
+        operation: 'Add', // one of Add, Update, Extract or Delete
+        exeFile: './publish/yliyun.exe',
+        resourceType: 'Icongroup',
+        resourceName: 'IDR_MAINFRAME',
+        lang: 1033, // Required, except when updating or deleting
+        resourceFile: './src/res/yliyun.ico' // Required, except when deleting
+    }, function(err) {
+        if (err) {
+            console.error('winresourcer err', err);
+            return;
+        }
+        console.log('winresourcer ok');
     });
 });
 
@@ -57,3 +85,5 @@ gulp.task('pack', () => {
 
     });
 });
+
+gulp.task('default', ['build']);
