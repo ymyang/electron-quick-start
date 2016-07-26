@@ -27,6 +27,8 @@ app.on('window-all-closed', function() {
 app.on('activate', function() {
     if (!win) {
         createWindow();
+    } else {
+        win.show();
     }
     if (!tray) {
         initTray();
@@ -43,8 +45,6 @@ function createWindow() {
     });
     win.loadURL(__dirname + '/index.html');
 
-    //win.webContents.openDevTools();
-
     win.on('close', function(event) {
         event.preventDefault();
         win.hide();
@@ -56,7 +56,7 @@ function createWindow() {
 }
 
 function initTray() {
-    tray = new Tray(__dirname + '/res/yliyun.ico');
+    tray = new Tray(__dirname + '/res/yliyun_16.png');
     tray.setToolTip('一粒云盘');
 
     tray.on('click', function() {

@@ -3,10 +3,13 @@
  */
 'use strict';
 
+const os = require('os');
 const proc = require('child_process');
 const gulp = require('gulp');
-// const packager = require('electron-packager');
+const packager = require('electron-packager');
 const jetpack = require('fs-jetpack');
+
+var _isMac = os.type() === 'Darwin';
 
 gulp.task('clean', () => {
     jetpack.remove('./build');
@@ -21,6 +24,10 @@ gulp.task('build', () => {
 
 gulp.task('start', () => {
     let electron = 'cache/electron-v1.2.8-win32-ia32/electron.exe';
+    if (_isMac) {
+        electron = 'cache/electron-v1.2.8-darwin-x64/Electron.app/Contents/MacOS/Electron';
+    }
+
     let child = proc.spawn(electron, ['build']);
 
     child.stdout.on('data', (data) => {
@@ -67,9 +74,9 @@ gulp.task('publish', () => {
 gulp.task('pack', () => {
     packager({
         arch: 'ia32',
-        dir: '.',
+        dir: './build',
         platform: 'win32',
-        version: '1.2.1',
+        version: '1.2.8',
         cache: './tmp',
         out: './release',
         asar: false,
