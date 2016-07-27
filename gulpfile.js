@@ -9,6 +9,8 @@ const gulp = require('gulp');
 const packager = require('electron-packager');
 const jetpack = require('fs-jetpack');
 
+const manifest = require('./src/package.json');
+
 var _isMac = os.type() === 'Darwin';
 
 gulp.task('clean', () => {
@@ -55,20 +57,42 @@ gulp.task('publish', () => {
         overwrite: true
     });
 
-    require('winresourcer')({
-        operation: 'Add', // one of Add, Update, Extract or Delete
-        exeFile: './publish/yliyun.exe',
-        resourceType: 'Icongroup',
-        resourceName: 'IDR_MAINFRAME',
-        lang: 1033, // Required, except when updating or deleting
-        resourceFile: './src/res/yliyun.ico' // Required, except when deleting
-    }, function(err) {
+    let rcedit = require('rcedit');
+
+    rcedit('./publish/yliyun.exe', {
+        icon: './src/res/yliyun.ico',
+        'product-version': manifest.version,
+        'file-version': manifest.version,
+        'version-string': {
+            'ProductName': '一粒云盘',
+            'FileDescription': 'yliyun execute',
+            'ProductVersion': manifest.version,
+            'CompanyName': '深圳一粒云科技有限公司',
+            'LegalCopyright': '© 2016, yliyun.com',
+            'OriginalFilename': 'yliyun.exe'
+        }
+    }, (err) => {
         if (err) {
-            console.error('winresourcer err', err);
+            console.error('rcedit err', err);
             return;
         }
-        console.log('winresourcer ok');
+        console.log('rcedit ok');
     });
+
+    //require('winresourcer')({
+    //    operation: 'Add', // one of Add, Update, Extract or Delete
+    //    exeFile: './publish/yliyun.exe',
+    //    resourceType: 'Icongroup',
+    //    resourceName: 'IDR_MAINFRAME',
+    //    lang: 1033, // Required, except when updating or deleting
+    //    resourceFile: './src/res/yliyun.ico' // Required, except when deleting
+    //}, function(err) {
+    //    if (err) {
+    //        console.error('winresourcer err', err);
+    //        return;
+    //    }
+    //    console.log('winresourcer ok');
+    //});
 });
 
 gulp.task('pack', () => {
