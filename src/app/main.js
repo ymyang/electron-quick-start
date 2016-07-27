@@ -21,10 +21,8 @@ var shouldQuit = app.makeSingleInstance(function(cmd, workingDir) {
         if (win.isMinimized()) {
             win.restore();
         }
-        win.show()
         win.focus();
     }
-    return true;
 });
 
 // 这个实例是多余的实例，需要退出
