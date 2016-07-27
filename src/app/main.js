@@ -14,6 +14,25 @@ const Tray = electron.Tray;
 var tray = null;
 var win = null;
 
+var shouldQuit = app.makeSingleInstance(function(cmd, workingDir) {
+    console.log('cmd:', cmd, ', workingDir:', workingDir);
+    // 当另一个实例运行的时候，这里将会被调用，我们需要激活应用的窗口
+    if (win) {
+        if (win.isMinimized()) {
+            win.restore();
+        }
+        win.show()
+        win.focus();
+    }
+    return true;
+});
+
+// 这个实例是多余的实例，需要退出
+if (shouldQuit) {
+    app.quit();
+    return;
+}
+
 app.on('ready', function() {
     createWindow();
     initTray();
@@ -43,7 +62,7 @@ function createWindow() {
         height: 600,
         autoHideMenuBar: true
     });
-    win.loadURL(__dirname + '/index.html');
+    win.loadURL('file://' + __dirname + '/index.html');
 
     win.on('close', function(event) {
         event.preventDefault();
