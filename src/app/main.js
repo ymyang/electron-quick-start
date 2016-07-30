@@ -55,7 +55,7 @@ app.on('activate', function() {
 function createWindow() {
     win = new BrowserWindow({
         icon: __dirname + '/res/yliyun_64.png',
-        title: '一粒云盘',
+        title: '一粒云',
         width: 800,
         height: 600,
         autoHideMenuBar: true
@@ -74,7 +74,7 @@ function createWindow() {
 
 function initTray() {
     tray = new Tray(__dirname + '/res/yliyun_16.png');
-    tray.setToolTip('一粒云盘');
+    tray.setToolTip('一粒云');
 
     tray.on('click', function() {
         win.show();

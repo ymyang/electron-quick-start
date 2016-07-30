@@ -8,6 +8,7 @@ const proc = require('child_process');
 const gulp = require('gulp');
 const packager = require('electron-packager');
 const jetpack = require('fs-jetpack');
+const shelljs = require('shelljs');
 
 const manifest = require('./src/package.json');
 
@@ -15,12 +16,13 @@ var _isMac = os.type() === 'Darwin';
 
 gulp.task('clean', () => {
     jetpack.remove('./build');
+    jetpack.remove('./release');
 });
 
 gulp.task('build', () => {
     jetpack.dir('./build', { empty: true});
-    jetpack.copy('./src/res', './build/res', { overwrite: true });
     jetpack.copy('./src/app', './build', { overwrite: true });
+    jetpack.copy('./src/res', './build/res', { overwrite: true });
     jetpack.copy('./src/package.json', './build/package.json', { overwrite: true });
 });
 
@@ -45,27 +47,28 @@ gulp.task('start', () => {
     });
 });
 
+gulp.task('pack', () => {
+    jetpack.dir('./publish');
+    jetpack.dir('./release', { empty: true });
 
-gulp.task('publish', () => {
-    jetpack.dir('./publish', { empty: true });
-    jetpack.copy('./cache/electron-v1.2.8-win32-ia32', './publish', {
+    jetpack.copy('./cache/electron-v1.2.8-win32-ia32', './release', {
         overwrite: true
     });
-    jetpack.rename('./publish/electron.exe', 'yliyun.exe');
-    jetpack.remove('./cache/electron-v1.2.8-win32-ia32/resources/default_app.asar');
-    jetpack.copy('./build', './cache/electron-v1.2.8-win32-ia32/resources/app', {
+    jetpack.rename('./release/electron.exe', 'yliyun.exe');
+    jetpack.remove('./release/resources/default_app.asar');
+    jetpack.copy('./build', './release/resources/app', {
         overwrite: true
     });
 
     let rcedit = require('rcedit');
 
-    rcedit('./publish/yliyun.exe', {
+    rcedit('./release/yliyun.exe', {
         icon: './src/res/yliyun.ico',
         'product-version': manifest.version,
         'file-version': manifest.version,
         'version-string': {
             'ProductName': '一粒云盘',
-            'FileDescription': 'yliyun execute',
+            'FileDescription': 'yliyun executor',
             'ProductVersion': manifest.version,
             'CompanyName': '深圳一粒云科技有限公司',
             'LegalCopyright': '© 2016, yliyun.com',
@@ -95,26 +98,10 @@ gulp.task('publish', () => {
     //});
 });
 
-gulp.task('pack', () => {
-    packager({
-        arch: 'ia32',
-        dir: './build',
-        platform: 'win32',
-        version: '1.2.8',
-        cache: './tmp',
-        out: './release',
-        asar: false,
-        overwrite: true,
-        name: 'yliyun',
-        appVersion: '1.7.2',
-        appCopyright: 'yliyun.com'
-    }, (err, app) => {
-        if (err) {
-            console.error('pack err', err);
-        }
-        console.log('pack finish', app);
-
-    });
+// 生成安装包
+gulp.task('install', function() {
+    // windows安装包
+    shelljs.exec('makensis ./res/install.nsi');
 });
 
 gulp.task('default', ['build']);
